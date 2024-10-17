@@ -1,7 +1,11 @@
 <template>
-  <div id="header">
-    <p>{{ msg }}</p>
-  </div>
+  <v-app-bar :elevation="2">
+    <template v-slot:prepend>
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+    </template>
+
+    <v-app-bar-title>Peuteu</v-app-bar-title>
+  </v-app-bar>
 </template>
 
 <script>
@@ -14,7 +18,5 @@ export default {
 </script>
 
 <style scoped>
-p {
-  color: #425eb9;
-}
+
 </style>
