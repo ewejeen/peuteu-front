@@ -19,9 +19,10 @@ function registerInterceptor(instance) {
       return response;
     },
     function (error) {
-      return Promise.reject(error);
+      return Promise.reject(error.response);
     }
   );
 }
 
+// export const request = create("http://http://221.140.87.2:8181");
 export const request = create(`http://localhost:8181`);
