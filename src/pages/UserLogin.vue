@@ -120,6 +120,6 @@ export default {
 <style scoped>
 .container-box {
   position: relative;
-  top: 15%;
+  top: 10%;
 }
 </style>
