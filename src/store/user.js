@@ -11,7 +11,7 @@ export default {
     initLoginResult(state) {
       return (state.isLoggedIn = "");
     },
-    getLoginResult(state, payload) {
+    updateLoginResult(state, payload) {
       return (state.isLoggedIn = payload);
     },
   },

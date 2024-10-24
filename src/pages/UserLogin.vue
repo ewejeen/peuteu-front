@@ -101,9 +101,10 @@ export default {
       login(payload)
         .then((result) => {
           console.log(result);
-          if (result && result.result === "success") {
-            this.$store.commit("getLoginResult", result.data.result);
+          if (result && result.data.result === "success") {
+            this.$store.commit("updateLoginResult", result.data.result);
             alert("로그인 성공");
+            this.$router.push("/");
           } else {
             alert("로그인 실패");
           }
@@ -120,6 +121,6 @@ export default {
 <style scoped>
 .container-box {
   position: relative;
-  top: 10%;
+  top: 8%;
 }
 </style>
