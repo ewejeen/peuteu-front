@@ -10,13 +10,11 @@
 
 <script>
 export default {
-  name: 'CommonHeader',
+  name: "CommonHeader",
   props: {
-    msg: String
-  }
-}
+    msg: String,
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

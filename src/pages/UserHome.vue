@@ -1,39 +1,77 @@
 <template>
   <v-container>
-    <div class="today-protein">
-      <p>오늘의 프로틴</p>
-      <p>{{ getTodayDate }}</p>
-      <p>{{ getRandomProverb }}</p>
-      <div>
-        <span class="now-protein">{{ nowProtein }}g</span> /
-        <span class="required-protein">{{ requiredProtein }}g</span>
-        <p>{{ remainProtein }}</p>
-      </div>
-    </div>
-    <div class="register-protein">
-      <p>프로틴 등록</p>
-      <v-row>
-        <v-col cols="8">
-          <div class="text-subtitle-1 text-medium-emphasis">이름</div>
-          <v-text-field variant="outlined" v-model="foodName"></v-text-field>
-        </v-col>
-        <v-col>
-          <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
-          <v-text-field variant="outlined" v-model="foodIntake"></v-text-field>
-        </v-col>
-      </v-row>
-      <v-btn
-        block
-        color="teal-lighten-2"
-        rounded="xl"
-        variant="flat"
-        size="large"
-        >저장</v-btn
-      >
-    </div>
-    <div>
-      <p>프로틴 내역</p>
-      <!-- <v-data-table
+    <v-row>
+      <v-col>
+        <div class="today-protein">
+          <div class="text-h4 font-weight-bold my-3 text-teal-darken-1">
+            오늘의 프로틴
+          </div>
+          <p class="text-h5 font-weight-bold mb-2">{{ getTodayDate }}</p>
+          <p class="text-subtitle-1 font-italic">{{ getRandomProverb }}</p>
+          <div class="mt-7 mb-5">
+            <v-row>
+              <v-col
+                class="text-right text-h3 font-weight-bold text-teal-darken-1 now-protein"
+              >
+                {{ nowProtein }}g
+              </v-col>
+              <v-col cols="1" class="text-center text-h5" align-self="end">
+                /
+              </v-col>
+              <v-col class="text-left text-h5" align-self="end">
+                <span class="required-protein">{{ requiredProtein }}g</span>
+              </v-col>
+            </v-row>
+            <v-row class="mt-2">
+              <v-col class="headline text-center">
+                {{ remainProtein }}
+              </v-col>
+            </v-row>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <div class="register-protein">
+          <p class="text-h5 font-weight-bold mb-1 text-teal-lighten-1">
+            프로틴 등록
+          </p>
+          <v-row>
+            <v-col cols="8">
+              <div class="text-subtitle-1 text-medium-emphasis">이름</div>
+              <v-text-field
+                variant="outlined"
+                v-model="foodName"
+              ></v-text-field>
+            </v-col>
+            <v-col>
+              <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
+              <v-text-field
+                variant="outlined"
+                v-model="foodIntake"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-btn
+            block
+            color="teal-darken-1"
+            rounded="xl"
+            variant="flat"
+            size="x-large"
+            class="mt-3 mb-4 font-weight-bold"
+            >저장</v-btn
+          >
+        </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <p class="text-h5 font-weight-bold mt-4 mb-1 text-teal-lighten-1">
+          프로틴 내역
+        </p>
+        <!-- <v-data-table
         :headers="headers"
         :items="desserts"
         :search="search"
@@ -56,36 +94,37 @@
       <div class="text-xs-center pt-2">
         <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
       </div> -->
-      <v-row>
-        <v-col cols="6">이름</v-col>
-        <v-col>섭취량 (g)</v-col>
-        <v-col>수정</v-col>
-      </v-row>
-      <v-infinite-scroll height="300" mode="manual" @load="load">
-        <template v-for="item in desserts" :key="item">
-          <v-row>
-            <v-col cols="6">{{ item.name }}</v-col>
-            <v-col style="color: blue">{{ item.protein }}g</v-col>
-            <v-col>
-              <v-icon
-                small
-                class="mr-2 mdi-pencil"
-                @click="editItem(props.item)"
-              >
-                edit
-              </v-icon>
-              <v-icon
-                small
-                class="mdi-delete-forever"
-                @click="deleteItem(props.item)"
-              >
-                delete
-              </v-icon>
-            </v-col>
-          </v-row>
-        </template>
-      </v-infinite-scroll>
-    </div>
+        <v-row>
+          <v-col cols="6">이름</v-col>
+          <v-col>섭취량 (g)</v-col>
+          <v-col>수정</v-col>
+        </v-row>
+        <v-infinite-scroll height="300" mode="manual" @load="load">
+          <template v-for="item in desserts" :key="item">
+            <v-row>
+              <v-col cols="6">{{ item.name }}</v-col>
+              <v-col style="color: blue">{{ item.protein }}g</v-col>
+              <v-col>
+                <v-icon
+                  small
+                  class="mr-2 mdi-pencil"
+                  @click="editItem(props.item)"
+                >
+                  edit
+                </v-icon>
+                <v-icon
+                  small
+                  class="mdi-delete-forever"
+                  @click="deleteItem(props.item)"
+                >
+                  delete
+                </v-icon>
+              </v-col>
+            </v-row>
+          </template>
+        </v-infinite-scroll>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -209,14 +248,14 @@ export default {
       const proverbArr = [
         "오늘 흘린 땀은 내일의 어쩌고다",
         "Trust yourself",
-        "Shut up and squat",
+        "Shut up and squat!",
       ];
       return proverbArr[this.getRandomNumber(0, 2)];
     },
     remainProtein() {
       const rem = this.requiredProtein - this.nowProtein;
       if (rem <= 0) {
-        return "오늘의 프로틴을 모두 채웠어요!";
+        return "짝짝짝! 오늘의 프로틴을 모두 채웠어요!";
       } else {
         return `${rem}g 남았어요!`;
       }
