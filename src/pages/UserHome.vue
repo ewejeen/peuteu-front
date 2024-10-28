@@ -1,11 +1,15 @@
 <template>
   <v-container>
+    <v-row no-gutters>
+      <v-col>
+        <div class="text-h4 font-weight-bold mt-3 text-teal-darken-1">
+          오늘의 프로틴
+        </div>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col>
         <div class="today-protein">
-          <div class="text-h4 font-weight-bold my-3 text-teal-darken-1">
-            오늘의 프로틴
-          </div>
           <p class="text-h5 font-weight-bold mb-2">{{ getTodayDate }}</p>
           <p class="text-subtitle-1 font-italic">{{ getRandomProverb }}</p>
           <div class="mt-7 mb-5">
@@ -71,29 +75,6 @@
         <p class="text-h5 font-weight-bold mt-4 mb-1 text-teal-lighten-1">
           프로틴 내역
         </p>
-        <!-- <v-data-table
-        :headers="headers"
-        :items="desserts"
-        :search="search"
-        hide-actions
-        v-model:pagination="pagination"
-        class="elevation-1"
-      >
-        <template v-slot:items="props">
-          <td>{{ props.item.name }}</td>
-          <td class="text-xs-right">{{ props.item.calories }}</td>
-          <td class="text-xs-right">{{ props.item.protein }}</td>
-          <td class="justify-center layout px-0">
-            
-          </td>
-        </template>
-        <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">Reset</v-btn>
-        </template>
-      </v-data-table>
-      <div class="text-xs-center pt-2">
-        <v-pagination v-model="pagination.page" :length="pages"></v-pagination>
-      </div> -->
         <v-row>
           <v-col cols="6">이름</v-col>
           <v-col>섭취량 (g)</v-col>
@@ -137,7 +118,6 @@ export default {
       nowProtein: 0,
       requiredProtein: 100,
 
-      // items: Array.from({ length: 5 }, (k, v) => v + 1),
       search: "",
       pagination: {},
       selected: [],
