@@ -6,6 +6,7 @@ import ProteinAnalysis from "@/pages/ProteinAnalysis.vue";
 import UserProfile from "@/pages/UserProfile.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import LoginLayout from "@/layouts/LoginLayout.vue";
+import UserJoin from "@/pages/UserJoin.vue";
 
 const routes = [
   {
@@ -42,6 +43,17 @@ const routes = [
         path: "",
         name: "UserLogin",
         component: UserLogin,
+      },
+    ],
+  },
+  {
+    path: "/join",
+    component: LoginLayout,
+    children: [
+      {
+        path: "",
+        name: "UserJoin",
+        component: UserJoin,
       },
     ],
   },

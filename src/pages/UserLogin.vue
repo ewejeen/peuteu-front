@@ -51,15 +51,13 @@
       </v-btn>
 
       <v-card-text class="text-center">
-        <a
+        <router-link
+          to="/join"
           class="text-teal-lighten-2 text-decoration-none"
-          href="#"
-          rel="noopener noreferrer"
-          target="_blank"
           color="teal-lighten-2"
         >
           회원가입 <v-icon icon="mdi-chevron-right"></v-icon>
-        </a>
+        </router-link>
       </v-card-text>
     </v-card>
   </v-container>
