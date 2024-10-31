@@ -1,7 +1,7 @@
 <template>
   <v-container class="align-self-center container-box">
     <v-img
-      class="mx-auto my-6"
+      class="mx-auto mb-6 mt-10"
       max-width="228"
       src="@/assets/image/logo-no-background.png"
     ></v-img>
@@ -116,9 +116,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.container-box {
-  position: relative;
-  top: 8%;
-}
-</style>
+<style scoped></style>
