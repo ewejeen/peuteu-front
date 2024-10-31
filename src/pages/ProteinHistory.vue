@@ -63,7 +63,11 @@
         </v-col>
         <v-col>
           <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
-          <v-text-field variant="outlined" v-model="foodIntake"></v-text-field>
+          <v-text-field
+            variant="outlined"
+            v-model="foodIntake"
+            suffix="g"
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-btn
