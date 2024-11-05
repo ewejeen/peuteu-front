@@ -43,19 +43,19 @@
             프로틴 등록
           </p>
           <v-row>
-            <v-col cols="8">
+            <v-col cols="6">
               <div class="text-subtitle-1 text-medium-emphasis">이름</div>
-              <v-text-field
-                variant="outlined"
-                v-model="foodName"
-              ></v-text-field>
+              <v-text-field variant="outlined" v-model="food"></v-text-field>
             </v-col>
             <v-col>
               <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
-              <v-text-field
-                variant="outlined"
-                v-model="foodIntake"
-              ></v-text-field>
+              <v-text-field variant="outlined" v-model="intake"></v-text-field>
+            </v-col>
+            <v-col>
+              <div class="text-subtitle-1 text-medium-emphasis">섭취시간</div>
+              <div>
+                <VueDatePicker v-model="intakeTime" time-picker />
+              </div>
             </v-col>
           </v-row>
           <v-btn
@@ -65,6 +65,7 @@
             variant="flat"
             size="x-large"
             class="mt-3 mb-4 font-weight-bold"
+            @click="saveProtein"
             >저장</v-btn
           >
         </div>
@@ -110,6 +111,8 @@
 </template>
 
 <script>
+import { saveProtein } from "@/api/protein";
+
 export default {
   name: "UserHome",
   data() {
@@ -117,6 +120,9 @@ export default {
       todayDate: "",
       nowProtein: 0,
       requiredProtein: 100,
+      food: null,
+      intake: null,
+      intakeTime: null,
 
       search: "",
       pagination: {},
@@ -224,6 +230,13 @@ export default {
 
       return year + "-" + month + "-" + day;
     },
+    getNowTime() {
+      const today = new Date();
+      const hours = today.getHours();
+      const minutes = today.getMinutes();
+
+      return { hours: hours, minutes: minutes };
+    },
     getRandomProverb() {
       const proverbArr = [
         "오늘 흘린 땀은 내일의 어쩌고다",
@@ -252,9 +265,51 @@ export default {
       );
     },
   },
+  created() {
+    this.intakeTime = this.getNowTime;
+  },
   methods: {
     getRandomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+
+    saveProtein() {
+      const food = this.food;
+      const intake = this.intake;
+      const intakeTime = this.intakeTime;
+      const intakeTimeHour = ("0" + intakeTime.hours).slice(-2);
+      const intakeTimeMinute = ("0" + intakeTime.minutes).slice(-2);
+
+      if (!food) {
+        alert("음식 이름을 입력하세요.");
+        return;
+      }
+      if (!intake) {
+        alert("섭취량을 입력하세요.");
+        return;
+      }
+      if (!intakeTime) {
+        alert("섭취시간을 입력하세요.");
+        return;
+      }
+      const payload = {
+        food: food,
+        intake: intake,
+        intakeTime: `${intakeTimeHour}:${intakeTimeMinute}`,
+      };
+
+      saveProtein(payload)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            alert("저장 완료");
+          } else {
+            alert("저장 실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
     },
 
     load({ done }) {
