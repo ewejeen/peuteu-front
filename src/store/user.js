@@ -1,18 +1,28 @@
 export default {
   state: {
-    isLoggedIn: "",
+    isLoggedIn: null,
+    accessToken: "",
   },
   getters: {
     getLoginStatus(state) {
       return state.isLoggedIn;
     },
+    getAccessToken(state) {
+      return state.accessToken;
+    },
   },
   mutations: {
     initLoginResult(state) {
-      return (state.isLoggedIn = "");
+      return (state.isLoggedIn = null);
     },
-    updateLoginResult(state, payload) {
-      return (state.isLoggedIn = payload);
+    updateLoginResult(state, result) {
+      return (state.isLoggedIn = result);
+    },
+    setAccessToken(state, accessToken) {
+      console.log(accessToken);
+      if (accessToken) {
+        state.accessToken = accessToken;
+      }
     },
   },
   actions: {},

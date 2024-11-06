@@ -21,14 +21,14 @@
       >
         비밀번호
 
-        <a
+        <!-- <a
           class="text-caption text-decoration-none text-teal-lighten-2"
           href="#"
           rel="noopener noreferrer"
           target="_blank"
         >
           비밀번호를 잊으셨나요?</a
-        >
+        > -->
       </div>
 
       <v-text-field
@@ -65,6 +65,8 @@
 
 <script>
 import { login } from "@/api/user";
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 
 export default {
   name: "UserLogin",
@@ -99,17 +101,28 @@ export default {
       login(payload)
         .then((result) => {
           console.log(result);
-          if (result && result.data.result === "success") {
-            this.$store.commit("updateLoginResult", result.data.result);
-            alert("로그인 성공");
-            this.$router.push("/");
+          if (result && result.status === 200) {
+            this.$store.commit("updateLoginResult", true);
+            const at = result.data.accessToken;
+            if (at && at != "") {
+              this.$store.commit("setAccessToken", at);
+              cookies.set("atpt", at);
+              alert("로그인 성공");
+              this.$router.push("/");
+            } else {
+              alert("토큰 생성 실패");
+            }
           } else {
             alert("로그인 실패");
           }
         })
         .catch((error) => {
-          alert("서버 에러 발생");
-          console.error(error);
+          if (error && error.status == 401) {
+            alert("로그인 실패");
+          } else {
+            alert("서버 에러 발생");
+            console.error(error);
+          }
         });
     },
   },

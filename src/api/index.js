@@ -1,4 +1,5 @@
 import axios from "axios";
+import { store } from "@/store/index";
 
 function create(url) {
   const request = Object.assign({
@@ -14,6 +15,18 @@ function create(url) {
 }
 
 function registerInterceptor(instance) {
+  instance.interceptors.request.use(
+    function (config) {
+      if (store.getters.getAccessToken) {
+        config.headers.Authorization = "Bearer " + store.getters.getAccessToken;
+      }
+      return config;
+    },
+    function (error) {
+      return Promise.reject(error.response);
+    }
+  );
+
   instance.interceptors.response.use(
     function (response) {
       return response;
@@ -24,5 +37,4 @@ function registerInterceptor(instance) {
   );
 }
 
-// export const request = create("http://http://221.140.87.2:8181");
-export const request = create(`http://localhost:8181`);
+export const request = create(process.env.VUE_APP_API_URL);
