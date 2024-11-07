@@ -44,7 +44,7 @@
           </p>
           <v-row>
             <v-col cols="6">
-              <div class="text-subtitle-1 text-medium-emphasis">이름</div>
+              <div class="text-subtitle-1 text-medium-emphasis">음식</div>
               <v-text-field variant="outlined" v-model="food"></v-text-field>
             </v-col>
             <v-col>
@@ -77,27 +77,23 @@
           프로틴 내역
         </p>
         <v-row>
-          <v-col cols="6">이름</v-col>
+          <v-col cols="6">음식</v-col>
           <v-col>섭취량 (g)</v-col>
           <v-col>수정</v-col>
         </v-row>
-        <v-infinite-scroll height="300" mode="manual" @load="load">
-          <template v-for="item in desserts" :key="item">
+        <v-infinite-scroll mode="manual" @load="load">
+          <template v-for="item in foodList" :key="item">
             <v-row>
               <v-col cols="6">{{ item.name }}</v-col>
-              <v-col style="color: blue">{{ item.protein }}g</v-col>
+              <v-col style="color: blue">{{ item.intake }}g</v-col>
               <v-col>
-                <v-icon
-                  small
-                  class="mr-2 mdi-pencil"
-                  @click="editItem(props.item)"
-                >
+                <v-icon small class="mr-2 mdi-pencil" @click="editItem(item)">
                   edit
                 </v-icon>
                 <v-icon
                   small
                   class="mdi-delete-forever"
-                  @click="deleteItem(props.item)"
+                  @click="deleteProtein(item.id)"
                 >
                   delete
                 </v-icon>
@@ -111,7 +107,14 @@
 </template>
 
 <script>
-import { saveProtein } from "@/api/protein";
+import {
+  deleteProtein,
+  getNowProteinSum,
+  getProteinList,
+  saveProtein,
+} from "@/api/protein";
+// import { useCookies } from "vue3-cookies";
+// const { cookies } = useCookies();
 
 export default {
   name: "UserHome",
@@ -119,7 +122,7 @@ export default {
     return {
       todayDate: "",
       nowProtein: 0,
-      requiredProtein: 100,
+      requiredProtein: 120,
       food: null,
       intake: null,
       intakeTime: null,
@@ -127,98 +130,7 @@ export default {
       search: "",
       pagination: {},
       selected: [],
-      headers: [
-        {
-          text: "Dessert (100g serving)",
-          align: "left",
-          sortable: false,
-          value: "name",
-        },
-        { text: "Calories", value: "calories" },
-        { text: "Protein (g)", value: "protein" },
-      ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-          calories: 159,
-          fat: 6.0,
-          carbs: 24,
-          protein: 4.0,
-          iron: "1%",
-        },
-        {
-          name: "Ice cream sandwich",
-          calories: 237,
-          fat: 9.0,
-          carbs: 37,
-          protein: 4.3,
-          iron: "1%",
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: 16.0,
-          carbs: 23,
-          protein: 6.0,
-          iron: "7%",
-        },
-        {
-          name: "Cupcake",
-          calories: 305,
-          fat: 3.7,
-          carbs: 67,
-          protein: 4.3,
-          iron: "8%",
-        },
-        {
-          name: "Gingerbread",
-          calories: 356,
-          fat: 16.0,
-          carbs: 49,
-          protein: 3.9,
-          iron: "16%",
-        },
-        {
-          name: "Jelly bean",
-          calories: 375,
-          fat: 0.0,
-          carbs: 94,
-          protein: 0.0,
-          iron: "0%",
-        },
-        {
-          name: "Lollipop",
-          calories: 392,
-          fat: 0.2,
-          carbs: 98,
-          protein: 0,
-          iron: "2%",
-        },
-        {
-          name: "Honeycomb",
-          calories: 408,
-          fat: 3.2,
-          carbs: 87,
-          protein: 6.5,
-          iron: "45%",
-        },
-        {
-          name: "Donut",
-          calories: 452,
-          fat: 25.0,
-          carbs: 51,
-          protein: 4.9,
-          iron: "22%",
-        },
-        {
-          name: "KitKat",
-          calories: 518,
-          fat: 26.0,
-          carbs: 65,
-          protein: 7,
-          iron: "6%",
-        },
-      ],
+      foodList: [],
     };
   },
   computed: {
@@ -238,11 +150,7 @@ export default {
       return { hours: hours, minutes: minutes };
     },
     getRandomProverb() {
-      const proverbArr = [
-        "오늘 흘린 땀은 내일의 어쩌고다",
-        "Trust yourself",
-        "Shut up and squat!",
-      ];
+      const proverbArr = ["오늘 흘린 땀은 내일의 어쩌고다"];
       return proverbArr[this.getRandomNumber(0, 2)];
     },
     remainProtein() {
@@ -253,6 +161,7 @@ export default {
         return `${rem}g 남았어요!`;
       }
     },
+
     pages() {
       if (
         this.pagination.rowsPerPage == null ||
@@ -267,10 +176,49 @@ export default {
   },
   created() {
     this.intakeTime = this.getNowTime;
+    this.getProteinList();
+    this.getNowProtein();
   },
   methods: {
     getRandomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+    getNowProtein() {
+      getNowProteinSum()
+        .then((result) => {
+          console.log(result);
+          if (result && result.data.result === "success") {
+            this.$store.commit("updateProteinSum", result.data.data);
+            this.nowProtein = result.data.data;
+          } else {
+            console.log("실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+    },
+
+    getProteinList() {
+      const payload = {
+        userId: "somxkosub2no", // TODO
+        targetDate: this.getTodayDate,
+        page: 0,
+      };
+
+      getProteinList(payload)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            this.foodList = result.data.data;
+          } else {
+            console.log("실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
     },
 
     saveProtein() {
@@ -304,6 +252,21 @@ export default {
             alert("저장 완료");
           } else {
             alert("저장 실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+    },
+
+    deleteProtein(id) {
+      deleteProtein(id)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            alert("삭제 완료");
+          } else {
+            alert("삭제 실패");
           }
         })
         .catch((error) => {
