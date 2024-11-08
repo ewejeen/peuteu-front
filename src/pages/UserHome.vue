@@ -43,18 +43,28 @@
             프로틴 등록
           </p>
           <v-row>
-            <v-col cols="6">
+            <v-col>
               <div class="text-subtitle-1 text-medium-emphasis">음식</div>
               <v-text-field variant="outlined" v-model="food"></v-text-field>
             </v-col>
+          </v-row>
+          <v-row no-gutters>
             <v-col>
               <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
               <v-text-field variant="outlined" v-model="intake"></v-text-field>
             </v-col>
-            <v-col>
+            <v-col class="ml-4">
               <div class="text-subtitle-1 text-medium-emphasis">섭취시간</div>
               <div>
-                <VueDatePicker v-model="intakeTime" time-picker />
+                <VueDatePicker
+                  v-model="intakeTime"
+                  time-picker
+                  style="
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    margin-top: -15px;
+                  "
+                />
               </div>
             </v-col>
           </v-row>
@@ -186,16 +196,22 @@ export default {
     getNowProtein() {
       getNowProteinSum()
         .then((result) => {
-          console.log(result);
           if (result && result.data.result === "success") {
-            this.$store.commit("updateProteinSum", result.data.data);
-            this.nowProtein = result.data.data;
+            const proteinSum = result.data.data;
+            if (proteinSum) {
+              this.$store.commit("updateProteinSum", result.data.data);
+              this.nowProtein = result.data.data;
+            } else {
+              this.nowProtein = 0;
+            }
           } else {
             console.log("실패");
+            this.nowProtein = 0;
           }
         })
         .catch((error) => {
           alert("서버 에러 발생");
+          this.nowProtein = 0;
           console.error(error);
         });
     },
@@ -250,6 +266,8 @@ export default {
         .then((result) => {
           if (result && result.data.result === "success") {
             alert("저장 완료");
+
+            this.refreshProtein();
           } else {
             alert("저장 실패");
           }
@@ -265,6 +283,8 @@ export default {
         .then((result) => {
           if (result && result.data.result === "success") {
             alert("삭제 완료");
+
+            this.refreshProtein();
           } else {
             alert("삭제 실패");
           }
@@ -273,6 +293,10 @@ export default {
           alert("서버 에러 발생");
           console.error(error);
         });
+    },
+    refreshProtein() {
+      this.getNowProtein();
+      this.getProteinList();
     },
 
     load({ done }) {
@@ -288,4 +312,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.dp__input {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+  position: relative;
+}
+</style>
