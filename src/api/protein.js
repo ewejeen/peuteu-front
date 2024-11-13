@@ -4,6 +4,10 @@ export const saveProtein = (payload) => {
   return request.post(`/api/protein`, payload);
 };
 
+export const updateProtein = (payload) => {
+  return request.patch(`/api/protein`, payload);
+};
+
 export const getProteinList = (payload) => {
   return request.get(`/api/protein`, {
     params: payload,

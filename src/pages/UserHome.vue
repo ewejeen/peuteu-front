@@ -91,13 +91,42 @@
           <v-col>섭취량 (g)</v-col>
           <v-col>수정</v-col>
         </v-row>
-        <v-infinite-scroll mode="manual" @load="load">
-          <template v-for="item in foodList" :key="item">
-            <v-row>
-              <v-col cols="6">{{ item.name }}</v-col>
-              <v-col style="color: blue">{{ item.intake }}g</v-col>
-              <v-col>
-                <v-icon small class="mr-2 mdi-pencil" @click="editItem(item)">
+        <!-- <v-infinite-scroll mode="manual" @load="load"> -->
+        <template v-for="item in foodList" :key="item">
+          <v-row>
+            <v-col cols="6">
+              <v-text-field
+                v-if="item.edit"
+                variant="outlined"
+                v-model="item.name"
+              ></v-text-field>
+              <p v-else>{{ item.name }}</p>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-if="item.edit"
+                variant="outlined"
+                v-model="item.intake"
+                suffix="g"
+              ></v-text-field>
+              <p v-else>{{ item.intake }}g</p>
+            </v-col>
+            <v-col>
+              <div v-if="item.edit">
+                <v-icon
+                  small
+                  class="mr-2 mdi-check"
+                  @click="updateProtein(item)"
+                >
+                  update
+                </v-icon>
+              </div>
+              <div v-else>
+                <v-icon
+                  small
+                  class="mr-2 mdi-pencil"
+                  @click="editProtein(item)"
+                >
                   edit
                 </v-icon>
                 <v-icon
@@ -107,10 +136,11 @@
                 >
                   delete
                 </v-icon>
-              </v-col>
-            </v-row>
-          </template>
-        </v-infinite-scroll>
+              </div>
+            </v-col>
+          </v-row>
+        </template>
+        <!-- </v-infinite-scroll> -->
       </v-col>
     </v-row>
   </v-container>
@@ -122,6 +152,7 @@ import {
   getNowProteinSum,
   getProteinList,
   saveProtein,
+  updateProtein,
 } from "@/api/protein";
 // import { useCookies } from "vue3-cookies";
 // const { cookies } = useCookies();
@@ -227,6 +258,7 @@ export default {
         .then((result) => {
           if (result && result.data.result === "success") {
             this.foodList = result.data.data;
+            this.foodList.forEach((item) => (item.edit = false));
           } else {
             console.log("실패");
           }
@@ -282,9 +314,10 @@ export default {
       deleteProtein(id)
         .then((result) => {
           if (result && result.data.result === "success") {
-            alert("삭제 완료");
-
-            this.refreshProtein();
+            if (confirm("삭제하시겠습니까?")) {
+              alert("삭제 완료");
+              this.refreshProtein();
+            }
           } else {
             alert("삭제 실패");
           }
@@ -293,6 +326,46 @@ export default {
           alert("서버 에러 발생");
           console.error(error);
         });
+    },
+
+    editProtein(item) {
+      item.edit = true;
+    },
+    updateProtein(item) {
+      const name = item.name;
+      const intake = item.intake;
+
+      if (!name) {
+        alert("음식 이름을 입력하세요.");
+        return;
+      }
+      if (!intake) {
+        alert("섭취량을 입력하세요.");
+        return;
+      }
+      const payload = {
+        proteinId: item.id,
+        food: name,
+        intake: intake,
+        intakeTime: item.intakeTime,
+      };
+
+      updateProtein(payload)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            alert("수정 완료");
+
+            this.refreshProtein();
+          } else {
+            alert("수정 실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+
+      item.edit = false;
     },
     refreshProtein() {
       this.getNowProtein();
