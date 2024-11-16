@@ -1,148 +1,156 @@
 <template>
   <v-container>
-    <v-row no-gutters>
-      <v-col>
-        <div class="text-h4 font-weight-bold mt-3 text-teal-darken-1">
-          오늘의 프로틴
+    <div class="header-section">
+      <div class="text-h4 font-weight-bold mt-3 text-teal-darken-1">
+        오늘의 프로틴
+      </div>
+    </div>
+
+    <div class="today-protein">
+      <p class="text-h5 font-weight-bold mb-2">{{ getTodayDate }}</p>
+      <!-- <p class="text-subtitle-1 font-italic">{{ getRandomProverb }}</p> -->
+      <div class="protein-summary mt-7">
+        <div class="protein-info">
+          <div class="now-protein text-h3 font-weight-bold text-teal-darken-1">
+            {{ nowProtein }}g
+          </div>
+          <div class="divider text-h5">/</div>
+          <div class="required-protein text-h5">{{ requiredProtein }}g</div>
         </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <div class="today-protein">
-          <p class="text-h5 font-weight-bold mb-2">{{ getTodayDate }}</p>
-          <p class="text-subtitle-1 font-italic">{{ getRandomProverb }}</p>
-          <div class="mt-7 mb-5">
-            <v-row>
-              <v-col
-                class="text-right text-h3 font-weight-bold text-teal-darken-1 now-protein"
-              >
-                {{ nowProtein }}g
-              </v-col>
-              <v-col cols="1" class="text-center text-h5" align-self="end">
-                /
-              </v-col>
-              <v-col class="text-left text-h5" align-self="end">
-                <span class="required-protein">{{ requiredProtein }}g</span>
-              </v-col>
-            </v-row>
-            <v-row class="mt-2">
-              <v-col class="headline text-center">
-                {{ remainProtein }}
-              </v-col>
-            </v-row>
+        <div class="protein-remaining mt-5">
+          <div class="text-center">
+            {{ remainProtein }}
           </div>
         </div>
-      </v-col>
-    </v-row>
+      </div>
+    </div>
 
-    <v-row>
-      <v-col>
-        <div class="register-protein">
-          <p class="text-h5 font-weight-bold mb-1 text-teal-lighten-1">
-            프로틴 등록
-          </p>
-          <v-row>
-            <v-col>
-              <div class="text-subtitle-1 text-medium-emphasis">음식</div>
-              <v-text-field variant="outlined" v-model="food"></v-text-field>
-            </v-col>
-          </v-row>
-          <v-row no-gutters>
-            <v-col>
-              <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
-              <v-text-field variant="outlined" v-model="intake"></v-text-field>
-            </v-col>
-            <v-col class="ml-4">
-              <div class="text-subtitle-1 text-medium-emphasis">섭취시간</div>
-              <div>
-                <VueDatePicker
-                  v-model="intakeTime"
-                  time-picker
-                  style="
-                    padding-top: 15px;
-                    padding-bottom: 15px;
-                    margin-top: -15px;
-                  "
-                />
-              </div>
-            </v-col>
-          </v-row>
-          <v-btn
-            block
-            color="teal-darken-1"
-            rounded="xl"
-            variant="flat"
-            size="x-large"
-            class="mt-3 mb-4 font-weight-bold"
-            @click="saveProtein"
-            >저장</v-btn
-          >
+    <div class="register-protein mt-10">
+      <p class="text-h5 font-weight-bold mb-1 text-teal-lighten-1">
+        프로틴 등록
+      </p>
+      <div class="register-fields">
+        <div class="field">
+          <div class="text-subtitle-1 text-medium-emphasis">음식</div>
+          <v-text-field
+            variant="outlined"
+            v-model="food"
+            hide-details
+            style="font-size: 0.5rem"
+          ></v-text-field>
         </div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <p class="text-h5 font-weight-bold mt-4 mb-1 text-teal-lighten-1">
-          프로틴 내역
-        </p>
-        <v-row>
-          <v-col cols="6">음식</v-col>
-          <v-col>섭취량 (g)</v-col>
-          <v-col>수정</v-col>
-        </v-row>
-        <!-- <v-infinite-scroll mode="manual" @load="load"> -->
-        <template v-for="item in foodList" :key="item">
-          <v-row>
-            <v-col cols="6">
-              <v-text-field
-                v-if="item.edit"
-                variant="outlined"
-                v-model="item.name"
-              ></v-text-field>
-              <p v-else>{{ item.name }}</p>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-if="item.edit"
-                variant="outlined"
-                v-model="item.intake"
-                suffix="g"
-              ></v-text-field>
-              <p v-else>{{ item.intake }}g</p>
-            </v-col>
-            <v-col>
-              <div v-if="item.edit">
-                <v-icon
-                  small
-                  class="mr-2 mdi-check"
-                  @click="updateProtein(item)"
-                >
-                  update
-                </v-icon>
-              </div>
-              <div v-else>
-                <v-icon
-                  small
-                  class="mr-2 mdi-pencil"
-                  @click="editProtein(item)"
-                >
-                  edit
-                </v-icon>
-                <v-icon
-                  small
-                  class="mdi-delete-forever"
-                  @click="deleteProtein(item.id)"
-                >
-                  delete
-                </v-icon>
-              </div>
-            </v-col>
-          </v-row>
-        </template>
-        <!-- </v-infinite-scroll> -->
-      </v-col>
-    </v-row>
+      </div>
+      <div class="register-fields">
+        <div class="field">
+          <div class="text-subtitle-1 text-medium-emphasis">섭취량</div>
+          <v-text-field
+            variant="outlined"
+            v-model="intake"
+            class="custom-text-field"
+            hide-details
+            type="number"
+            suffix="g"
+          ></v-text-field>
+        </div>
+        <div class="field">
+          <div class="text-subtitle-1 text-medium-emphasis">섭취시간</div>
+          <div class="custom-date-picker">
+            <VueDatePicker
+              v-model="intakeTime"
+              time-picker
+              class="custom-text-field"
+            />
+          </div>
+        </div>
+      </div>
+      <v-btn
+        block
+        color="teal-darken-1"
+        rounded="xl"
+        variant="flat"
+        size="x-large"
+        class="mt-10 mb-4 font-weight-bold"
+        @click="saveProtein"
+        >저장</v-btn
+      >
+    </div>
+
+    <div class="protein-history mt-12">
+      <p class="text-h5 font-weight-bold text-teal-lighten-1 mb-4">
+        프로틴 내역
+      </p>
+      <div class="mb-6">
+        <v-table fixed-header class="pt-table">
+          <thead>
+            <tr>
+              <th class="ht-th" style="width: 50%">음식</th>
+              <th class="ht-th" style="width: 27%">섭취량 (g)</th>
+              <th class="ht-th" style="width: 23%">수정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in foodList" :key="item.id">
+              <td>
+                <v-text-field
+                  v-if="item.edit"
+                  variant="outlined"
+                  v-model="item.name"
+                  hide-details
+                  density="compact"
+                ></v-text-field>
+                <span v-else>{{ item.name }}</span>
+              </td>
+              <td>
+                <v-text-field
+                  v-if="item.edit"
+                  variant="outlined"
+                  v-model="item.intake"
+                  suffix="g"
+                  hide-details
+                  density="compact"
+                  type="number"
+                  style="font-size: 0.7rem"
+                ></v-text-field>
+                <span v-else>{{ item.intake }}g</span>
+              </td>
+              <td>
+                <div v-if="item.edit">
+                  <v-icon
+                    small
+                    class="mr-2 mdi-check"
+                    @click="updateProtein(item)"
+                  >
+                    check
+                  </v-icon>
+                  <v-icon small class="mdi-close" @click="editCancel(item)">
+                    close
+                  </v-icon>
+                </div>
+                <div v-else>
+                  <v-icon
+                    small
+                    class="mr-2 mdi-pencil"
+                    @click="editProtein(item)"
+                  >
+                    pencil
+                  </v-icon>
+                  <v-icon
+                    small
+                    class="mdi-delete-forever"
+                    @click="deleteProtein(item.id)"
+                  >
+                    delete_forever
+                  </v-icon>
+                </div>
+              </td>
+            </tr>
+            <tr v-if="!foodList.length">
+              <td colspan="3" class="text-center">내역이 없어요</td>
+            </tr>
+          </tbody>
+        </v-table>
+      </div>
+    </div>
   </v-container>
 </template>
 
@@ -371,24 +379,111 @@ export default {
       this.getNowProtein();
       this.getProteinList();
     },
-
-    load({ done }) {
-      setTimeout(() => {
-        this.items.push(
-          ...Array.from({ length: 5 }, (k, v) => v + this.items.at(-1) + 1)
-        );
-
-        done("ok");
-      }, 10);
+    editCancel(item) {
+      item.edit = false;
     },
   },
 };
 </script>
+<style scoped>
+/* Flexbox 스타일을 사용하여 반응형 정렬 */
+.header-section {
+  margin-bottom: 20px;
+}
+
+/* 오늘의 프로틴 정보 섹션 스타일 */
+.protein-summary {
+  display: block;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.protein-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  margin: 0 20px;
+}
+
+/* 등록 섹션 스타일 */
+.register-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.field {
+  flex: 1;
+}
+
+.pt-table {
+  color: #666666 !important;
+}
+
+.ht-th {
+  text-align: center !important;
+  font-weight: 600 !important;
+}
+
+:deep(.pt-table .v-text-field input) {
+  font-size: 0.8rem;
+}
+
+.v-icon {
+  cursor: pointer;
+  color: #757575;
+  transition: color 0.2s;
+}
+
+.v-icon:hover {
+  color: #424242;
+}
+
+.mdi-check {
+  color: #4caf50;
+}
+
+.mdi-pencil {
+  color: #2196f3;
+}
+
+.mdi-delete-forever {
+  color: #f44336;
+}
+</style>
 
 <style scoped>
-.dp__input {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-  position: relative;
+/* 섭취시간과 섭취량 스타일을 맞추기 위한 공통 스타일 */
+.custom-date-picker {
+  display: flex;
+  align-items: center;
+  height: 56px; /* v-text-field와 동일한 높이 */
+  border: 1px solid #bdbdbd; /* v-text-field의 테두리 색상과 일치 */
+  border-radius: 4px; /* 동일한 둥근 모서리 */
+  padding: 0 8px; /* 내부 여백을 v-text-field와 동일하게 설정 */
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+/* 포커스될 때 테두리 색상을 변경 */
+.custom-date-picker:focus-within {
+  border: 2px #000 solid;
+}
+
+/* VueDatePicker의 인풋 필드 스타일 */
+.custom-date-picker input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 16px;
+  padding: 0;
+}
+
+.dp__theme_light {
+  --dp-border-color: none;
 }
 </style>
