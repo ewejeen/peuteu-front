@@ -25,3 +25,9 @@ export const deleteProtein = (id) => {
     },
   });
 };
+
+export const getProteinStatByMonth = (payload) => {
+  return request.get(`/api/protein-month-stat`, {
+    params: payload,
+  });
+};

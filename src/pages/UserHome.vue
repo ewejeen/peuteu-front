@@ -176,8 +176,6 @@ export default {
       intake: null,
       intakeTime: null,
 
-      search: "",
-      pagination: {},
       selected: [],
       foodList: [],
     };
@@ -209,18 +207,6 @@ export default {
       } else {
         return `${rem}g 남았어요!`;
       }
-    },
-
-    pages() {
-      if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      )
-        return 0;
-
-      return Math.ceil(
-        this.pagination.totalItems / this.pagination.rowsPerPage
-      );
     },
   },
   created() {
@@ -296,10 +282,12 @@ export default {
         alert("섭취시간을 입력하세요.");
         return;
       }
+
+      const todayDate = this.getTodayDate();
       const payload = {
         food: food,
         intake: intake,
-        intakeTime: `${intakeTimeHour}:${intakeTimeMinute}`,
+        intakeTime: `${todayDate} ${intakeTimeHour}:${intakeTimeMinute}`,
       };
 
       saveProtein(payload)
@@ -378,6 +366,10 @@ export default {
     refreshProtein() {
       this.getNowProtein();
       this.getProteinList();
+
+      this.food = null;
+      this.intake = null;
+      this.intakeTime = null;
     },
     editCancel(item) {
       item.edit = false;
