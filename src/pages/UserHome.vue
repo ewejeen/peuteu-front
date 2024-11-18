@@ -283,7 +283,7 @@ export default {
         return;
       }
 
-      const todayDate = this.getTodayDate();
+      const todayDate = this.getTodayDate;
       const payload = {
         food: food,
         intake: intake,
