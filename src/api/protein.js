@@ -31,3 +31,9 @@ export const getProteinStatByMonth = (payload) => {
     params: payload,
   });
 };
+
+export const getProteinSumByDates = (payload) => {
+  return request.get(`/api/protein-sum-by-dates`, {
+    params: payload,
+  });
+};
