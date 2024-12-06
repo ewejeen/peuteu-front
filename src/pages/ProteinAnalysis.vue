@@ -32,7 +32,7 @@
         class="text-h4 font-weight-bold text-center text-teal-lighten-1"
         style="line-height: 80px"
       >
-        60g
+        {{ averageIntake }}g
       </div>
     </v-card-text>
     <v-card-text>
@@ -86,6 +86,7 @@ export default {
 
       loaded: false,
       sumDataArr: [],
+      averageIntake: 0,
 
       chartData: {
         labels: [],
@@ -151,6 +152,7 @@ export default {
     await this.getThisWeeksProteinDataSet(); // 화면 로딩 시 이번 주 기록 보여줌
   },
   watch: {
+    // 차트 데이터
     sumDataArr: function () {
       this.chartData.datasets = [
         {
@@ -160,6 +162,10 @@ export default {
           tension: 0.3,
         },
       ];
+
+      let sum = 0;
+      this.sumDataArr.map((x) => (sum += x));
+      this.averageIntake = (sum / this.sumDataArr.length).toFixed(2);
     },
   },
   methods: {
