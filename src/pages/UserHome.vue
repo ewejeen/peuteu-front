@@ -32,12 +32,21 @@
       <div class="register-fields">
         <div class="field">
           <div class="text-subtitle-1 text-medium-emphasis">음식</div>
-          <v-text-field
+          <v-combobox
+            variant="outlined"
+            v-model="food"
+            :items="intakeList"
+            item-title="name"
+            hide-details
+            style="font-size: 0.5rem"
+          ></v-combobox>
+
+          <!-- <v-text-field
             variant="outlined"
             v-model="food"
             hide-details
             style="font-size: 0.5rem"
-          ></v-text-field>
+          ></v-text-field> -->
         </div>
       </div>
       <div class="register-fields">
@@ -158,6 +167,7 @@
 import {
   deleteProtein,
   getNowProteinSum,
+  getProteinIntakeList,
   getProteinList,
   saveProtein,
   updateProtein,
@@ -178,6 +188,7 @@ export default {
 
       selected: [],
       foodList: [],
+      intakeList: [],
     };
   },
   computed: {
@@ -213,6 +224,14 @@ export default {
     this.intakeTime = this.getNowTime;
     this.getProteinList();
     this.getNowProtein();
+    this.getProteinIntakeList();
+  },
+  watch: {
+    food: function () {
+      if (this.food) {
+        this.intake = this.food.intake;
+      }
+    },
   },
   methods: {
     getRandomNumber(min, max) {
@@ -263,8 +282,25 @@ export default {
         });
     },
 
+    // 섭취 프로틴 목록 검색
+    getProteinIntakeList() {
+      getProteinIntakeList()
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            this.intakeList = result.data.data;
+          } else {
+            console.log("실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+    },
+
+    // 프로틴 저장
     saveProtein() {
-      const food = this.food;
+      const food = typeof this.food != "string" ? this.food.name : this.food;
       const intake = this.intake;
       const intakeTime = this.intakeTime;
       const intakeTimeHour = ("0" + intakeTime.hours).slice(-2);

@@ -37,3 +37,7 @@ export const getProteinSumByDates = (payload) => {
     params: payload,
   });
 };
+
+export const getProteinIntakeList = () => {
+  return request.get(`/api/protein-intake-list`);
+};
