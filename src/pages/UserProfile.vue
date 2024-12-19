@@ -16,9 +16,11 @@
     </v-row>
     <v-row no-gutters class="mt-3">
       <v-col cols="4">
-        <v-text-field variant="outlined" model="target" readonly>{{
-          target
-        }}</v-text-field>
+        <v-text-field
+          variant="outlined"
+          v-model="target"
+          :readonly="!proteinUpdatable"
+        ></v-text-field>
       </v-col>
       <v-col
         cols="1"
@@ -28,7 +30,8 @@
       >
       <v-col cols="2">
         <v-btn
-          color="teal-lighten-2"
+          v-if="!proteinUpdatable"
+          color="teal-darken-2"
           density="compact"
           size="small"
           slim
@@ -37,7 +40,20 @@
           class="ml-2"
           @click="changeTarget"
         >
-          {{ mode == "modify" ? "수정" : "저장" }}
+          수정
+        </v-btn>
+        <v-btn
+          v-else
+          color="teal-lighten-2"
+          density="compact"
+          size="small"
+          slim
+          width="15"
+          height="56"
+          class="ml-2"
+          @click="saveTarget"
+        >
+          저장
         </v-btn>
       </v-col>
       <v-col class="ml-5" v-if="mode == 'save'">
@@ -100,24 +116,68 @@
 </template>
 
 <script>
+import { getMyProteinTarget, updateMyProteinTarget } from "@/api/protein";
+
 export default {
   name: "UserProfile",
   data() {
     return {
       mode: "modify",
+      proteinUpdatable: false,
       target: 0,
       alertStatus: "off",
       autoCalculate: "off",
       alertTime: "05:00",
     };
   },
+  created() {
+    this.target = this.getMyTarget();
+  },
   methods: {
     changeTarget() {
+      this.proteinUpdatable = !this.proteinUpdatable;
+
       if (this.mode == "modify") {
         this.mode = "save";
       } else {
         this.mode = "modify";
       }
+    },
+    // 내 목표 섭취량 조회
+    getMyTarget() {
+      getMyProteinTarget()
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            this.target = result.data.data;
+          } else {
+            console.log("실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+    },
+    // 목표 섭취량 수정
+    saveTarget() {
+      const payload = {
+        target: this.target,
+      };
+      updateMyProteinTarget(payload)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            alert("수정 완료");
+
+            this.getMyTarget();
+            this.changeTarget();
+          } else {
+            alert("수정 실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
     },
   },
 };

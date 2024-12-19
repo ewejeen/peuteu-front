@@ -41,3 +41,13 @@ export const getProteinSumByDates = (payload) => {
 export const getProteinIntakeList = () => {
   return request.get(`/api/protein-intake-list`);
 };
+
+// 목표 프로틴 섭취량 조회
+export const getMyProteinTarget = () => {
+  return request.get(`/api/protein-target`);
+};
+
+// 목표 프로틴 섭취량 수정
+export const updateMyProteinTarget = (payload) => {
+  return request.patch(`/api/protein-target`, payload);
+};
