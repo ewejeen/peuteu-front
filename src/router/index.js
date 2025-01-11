@@ -7,6 +7,7 @@ import UserProfile from "@/pages/UserProfile.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import LoginLayout from "@/layouts/LoginLayout.vue";
 import UserJoin from "@/pages/UserJoin.vue";
+import UserInfo from "@/pages/UserInfo.vue";
 
 const routes = [
   {
@@ -32,6 +33,11 @@ const routes = [
         path: "/profile",
         name: "UserProfile",
         component: UserProfile,
+      },
+      {
+        path: "/user-info",
+        name: "UserInfo",
+        component: UserInfo,
       },
     ],
   },
