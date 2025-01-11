@@ -1,5 +1,46 @@
 <template>
-  <v-container class="align-self-center container-box">
+  <v-container v-if="!isAuthenticated" class="align-self-center container-box">
+    <v-card
+      variant="text"
+      color="surface-variant"
+      class="mx-auto my-auto pa-5"
+      max-width="448"
+      style="margin-top: 200px"
+      rounded="lg"
+    >
+      <div
+        class="text-subtitle-1 text-center text-teal-lighten-1"
+        style="margin-top: 130px; margin-bottom: 80px"
+      >
+        소중한 개인정보 보호를 위해 <br />비밀번호를 다시 입력해주세요
+      </div>
+      <div
+        class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mt-12"
+      >
+        비밀번호
+      </div>
+
+      <v-text-field
+        :append-inner-icon="pwVisible ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="pwVisible ? 'text' : 'password'"
+        variant="outlined"
+        v-model="userPw"
+        @click:append-inner="pwVisible = !pwVisible"
+      ></v-text-field>
+
+      <v-btn
+        class="mt-4"
+        color="teal-lighten-2"
+        size="large"
+        height="50px"
+        block
+        @click="enterPassword"
+      >
+        확인
+      </v-btn>
+    </v-card>
+  </v-container>
+  <v-container v-if="isAuthenticated" class="align-self-center container-box">
     <div class="text-h4 font-weight-bold mt-3 mb-3 text-teal-darken-1">
       개인 정보 수정
     </div>
@@ -70,12 +111,14 @@
 </template>
 
 <script>
-import { getUserInfo, updateUserInfo } from "@/api/user";
+import { getUserInfo, updateUserInfo, validatePassword } from "@/api/user";
 
 export default {
   name: "UserInfo",
   data() {
     return {
+      isAuthenticated: false,
+      pwVisible: false,
       email: null,
       nickname: null,
       gender: null,
@@ -97,6 +140,27 @@ export default {
     this.setUser();
   },
   methods: {
+    enterPassword() {
+      const payload = {
+        userId: "somxkosub2no",
+        password: this.userPw,
+      };
+
+      validatePassword(payload)
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            if (result.data.data) {
+              this.isAuthenticated = true;
+            } else {
+              alert("비밀번호가 일치하지 않습니다.");
+            }
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
+    },
     setUser() {
       const userId = "somxkosub2no";
       getUserInfo(userId)

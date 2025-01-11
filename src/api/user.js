@@ -17,3 +17,10 @@ export const getUserInfo = (id) => {
 export const updateUserInfo = (payload) => {
   return request.patch(`/api/user`, payload);
 };
+
+// 비밀번호 검증
+export const validatePassword = (payload) => {
+  return request.get("/api/password", {
+    params: payload,
+  });
+};
