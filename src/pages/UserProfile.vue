@@ -44,10 +44,11 @@
         true-value="on"
         false-value="off"
         v-model="autoCalculate"
+        @change="calculateTarget"
         hide-details
       ></v-switch>
     </div>
-    <div class="mt-10">
+    <!-- <div class="mt-10">
       <p class="text-h5 font-weight-bold text-teal-lighten-1">섭취 알림 설정</p>
     </div>
     <div class="d-flex align-items-center mb-3">
@@ -62,13 +63,13 @@
       ></v-switch>
       <p class="text-subtitle-1 text-teal-lighten-1 mr-3">시간</p>
       <p class="text-subtitle-1 text-teal-lighten-1">{{ alertTime }} ></p>
-    </div>
+    </div> -->
     <div class="mt-10 mb-3">
       <p class="text-h5 font-weight-bold text-teal-lighten-1">개인 정보 수정</p>
     </div>
     <router-link
-        to="/user-info"
-        class="text-teal-lighten-2 text-decoration-none"
+      to="/user-info"
+      class="text-teal-lighten-2 text-decoration-none"
     >
       바로가기 <v-icon icon="mdi-chevron-right"></v-icon>
     </router-link>
@@ -81,7 +82,11 @@
 </template>
 
 <script>
-import { getMyProteinTarget, updateMyProteinTarget } from "@/api/protein";
+import {
+  getMyProteinTarget,
+  updateMyProteinTarget,
+  calculateMyTarget,
+} from "@/api/protein";
 import { logout } from "@/api/user";
 
 export default {
@@ -144,6 +149,35 @@ export default {
           alert("서버 에러 발생");
           console.error(error);
         });
+    },
+    // 목표 섭취량 자동 계산
+    calculateTarget() {
+      if (this.autoCalculate === "on") {
+        if (
+          confirm(
+            "개인 정보에 입력된 키, 몸무게, 섭취 목적을 기준으로 섭취량을 계산합니다."
+          )
+        ) {
+          calculateMyTarget()
+            .then((result) => {
+              if (result && result.data.result === "success") {
+                this.target = result.data.data;
+              } else {
+                console.log("실패");
+              }
+            })
+            .catch((error) => {
+              if (error.data.message) {
+                alert(error.data.message);
+              } else {
+                alert("서버 에러 발생");
+              }
+
+              this.autoCalculate = "off";
+              console.error(error);
+            });
+        }
+      }
     },
     // 로그아웃
     async logout() {
