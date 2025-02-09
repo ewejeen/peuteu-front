@@ -171,6 +171,7 @@ import {
   getProteinList,
   saveProtein,
   updateProtein,
+  getMyProteinTarget,
 } from "@/api/protein";
 // import { useCookies } from "vue3-cookies";
 // const { cookies } = useCookies();
@@ -181,7 +182,7 @@ export default {
     return {
       todayDate: "",
       nowProtein: 0,
-      requiredProtein: 120,
+      requiredProtein: 0,
       food: null,
       intake: null,
       intakeTime: null,
@@ -222,6 +223,7 @@ export default {
   },
   created() {
     this.intakeTime = this.getNowTime;
+    this.getMyTarget();
     this.getProteinList();
     this.getNowProtein();
     this.getProteinIntakeList();
@@ -236,6 +238,21 @@ export default {
   methods: {
     getRandomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+    // 내 목표 섭취량 조회
+    getMyTarget() {
+      getMyProteinTarget()
+        .then((result) => {
+          if (result && result.data.result === "success") {
+            this.requiredProtein = result.data.data;
+          } else {
+            console.log("실패");
+          }
+        })
+        .catch((error) => {
+          alert("서버 에러 발생");
+          console.error(error);
+        });
     },
     getNowProtein() {
       getNowProteinSum()

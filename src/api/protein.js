@@ -51,3 +51,8 @@ export const getMyProteinTarget = () => {
 export const updateMyProteinTarget = (payload) => {
   return request.patch(`/api/protein-target`, payload);
 };
+
+// 섭취량 자동 계산
+export const calculateMyTarget = () => {
+  return request.get(`/api/calculate-my-target`);
+};

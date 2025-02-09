@@ -146,6 +146,11 @@ export default {
         password: this.userPw,
       };
 
+      if(!this.userPw) {
+        alert('비밀번호를 입력해 주세요.');
+        return;
+      }
+
       validatePassword(payload)
         .then((result) => {
           if (result && result.data.result === "success") {
@@ -157,7 +162,11 @@ export default {
           }
         })
         .catch((error) => {
-          alert("서버 에러 발생");
+          if(error.data.message) {
+            alert(error.data.message)
+          } else {
+            alert("서버 에러 발생");
+          }
           console.error(error);
         });
     },
