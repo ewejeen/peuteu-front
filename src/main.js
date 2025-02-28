@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import routers from "./router";
+import router from "./router";
 import { store } from "./store/index";
 import vuetify from "./plugins/vuetify";
 import axios from "axios";
@@ -16,7 +16,7 @@ loadFonts();
 
 const app = createApp(App);
 app.config.globalProperties.$axios = axios;
-app.use(vuetify).use(routers).use(store).use(setupCalendar, {});
+app.use(vuetify).use(router).use(store).use(setupCalendar, {});
 app.mount("#app");
 
 app.provide("axios", axios);

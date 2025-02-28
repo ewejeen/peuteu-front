@@ -34,6 +34,7 @@
         variant="outlined"
         v-model="userPw"
         @click:append-inner="pwVisible = !pwVisible"
+        :rules="[rules.password.required, rules.password.validation]"
       ></v-text-field>
       <div
         class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
@@ -46,13 +47,18 @@
         variant="outlined"
         v-model="userPwCheck"
         @click:append-inner="pwCheckVisible = !pwCheckVisible"
+        :rules="[rules.passwordChk.required, rules.passwordChk.validation]"
       ></v-text-field>
 
       <div class="text-subtitle-1 text-medium-emphasis">닉네임</div>
       <v-text-field
         variant="outlined"
         v-model="nickname"
-        :rules="[]"
+        :rules="[
+          rules.nickname.required,
+          rules.nickname.length,
+          rules.nickname.charType,
+        ]"
       ></v-text-field>
 
       <div class="text-subtitle-1 text-medium-emphasis">성별 (선택)</div>
@@ -125,6 +131,12 @@ export default {
       height: null,
       weight: null,
       goal: null,
+      regex: {
+        email:
+          /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i,
+        nickname: /^[a-zA-Z0-9가-힣]+$/,
+        password: /^(?=.*[a-z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,16}$/,
+      },
       genderItems: [
         { value: "M", title: "남성" },
         { value: "F", title: "여성" },
@@ -139,12 +151,28 @@ export default {
         email: {
           required: (value) => !!value || "이메일을 입력해 주세요.",
           formatted: (value) =>
-            (!!value &&
-              /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i.test(
-                value
-              )) ||
+            (!!value && this.regex.email.test(value)) ||
             "이메일 형식이 올바르지 않습니다.",
           duplicated: (value) => this.checkDuplicatedEmail(value),
+        },
+        nickname: {
+          required: (value) => !!value || "닉네임을 입력해 주세요.",
+          length: (value) =>
+            value.length <= 8 || "닉네임은 8자 이내로 입력해 주세요.",
+          charType: (value) =>
+            (!!value && this.regex.nickname.test(value)) ||
+            "닉네임은 한글, 영어, 숫자로만 입력해 주세요.",
+        },
+        password: {
+          required: (value) => !!value || "비밀번호를 입력해 주세요.",
+          validation: (value) =>
+            (!!value && this.regex.password.test(value)) ||
+            "비밀번호는 한글, 영어, 숫자를 포함하여 8~16자로 입력해 주세요.",
+        },
+        passwordChk: {
+          required: (value) => !!value || "비밀번호 확인값을 입력해 주세요.",
+          validation: (value) =>
+            !!value == this.userPw || "비밀번호와 일치하지 않습니다.",
         },
       },
     };
@@ -166,6 +194,14 @@ export default {
         alert("아이디를 입력하세요.");
         return;
       }
+      if (
+        !/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i.test(
+          userId
+        )
+      ) {
+        alert("이메일 형식이 올바르지 않습니다.");
+        return;
+      }
       if (!userPw) {
         alert("비밀번호를 입력하세요.");
         return;
@@ -174,6 +210,11 @@ export default {
         alert("닉네임을 입력하세요.");
         return;
       }
+      if (nickname.length > 8) {
+        alert("닉네임은 8자 이내로 입력해 주세요.");
+        return;
+      }
+
       const payload = {
         email: userId,
         password: userPw,
