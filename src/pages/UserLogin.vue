@@ -1,10 +1,10 @@
 <template>
   <v-container class="align-self-center container-box">
-    <v-img
+    <!-- <v-img
       class="mx-auto mb-6 mt-10"
       max-width="228"
       src="@/assets/image/logo-no-background.png"
-    ></v-img>
+    ></v-img> -->
 
     <v-card
       variant="text"
@@ -65,8 +65,8 @@
 
 <script>
 import { login } from "@/api/user";
-import { useCookies } from "vue3-cookies";
-const { cookies } = useCookies();
+// import { useCookies } from "vue3-cookies";
+// const { cookies } = useCookies();
 
 export default {
   name: "UserLogin",
@@ -100,14 +100,13 @@ export default {
 
       login(payload)
         .then((result) => {
-          console.log(result);
           if (result && result.status === 200) {
             this.$store.commit("updateLoginResult", true);
             const at = result.data.accessToken;
-            if (at && at != "") {
+            const rt = result.data.refreshToken;
+            if (at !== "" && rt !== "") {
               this.$store.commit("setAccessToken", at);
-              cookies.set("atpt", at);
-              alert("로그인 성공");
+              this.$store.commit("setRefreshToken", rt);
               this.$router.push("/");
             } else {
               alert("토큰 생성 실패");

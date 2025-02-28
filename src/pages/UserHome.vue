@@ -221,6 +221,7 @@ export default {
     },
   },
   created() {
+    this.checkLogin();
     this.intakeTime = this.getNowTime;
     this.getProteinList();
     this.getNowProtein();
@@ -234,6 +235,14 @@ export default {
     },
   },
   methods: {
+    checkLogin() {
+      console.log('checklogin')
+      if (!this.$store.getters.getAccessToken) {
+        console.log('no token')
+        this.$router.push('/login')
+        return;
+      }
+    },
     getRandomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
