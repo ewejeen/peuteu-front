@@ -78,17 +78,13 @@ const router = createRouter({
 
 // 사용자 로그인 상태 확인 함수 (JWT 토큰 여부)
 function isAuthenticated() {
-  console.log('at',store.getters.getAccessToken);
   return !!store.getters.getAccessToken;
-
-  
-  // return !!localStorage.getItem("accessToken"); // JWT 토큰이 있으면 로그인 상태로 간주
 }
 
 // 로그인 체크: 인증 필요한 페이지(requiresAuth: true)에 접근 시 로그인 여부 확인
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isAuthenticated()) {
-    next("/login"); // 로그인되지 않았다면 로그인 페이지로 이동
+    next("/login");
   } else {
     next(); // 로그인되어 있거나 인증이 필요 없는 페이지면 그대로 진행
   }

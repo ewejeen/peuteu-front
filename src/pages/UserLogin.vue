@@ -1,10 +1,10 @@
 <template>
   <v-container class="align-self-center container-box">
-    <!-- <v-img
+    <v-img
       class="mx-auto mb-6 mt-10"
       max-width="228"
       src="@/assets/image/logo-no-background.png"
-    ></v-img> -->
+    ></v-img>
 
     <v-card
       variant="text"
@@ -103,10 +103,8 @@ export default {
           if (result && result.status === 200) {
             this.$store.commit("updateLoginResult", true);
             const at = result.data.accessToken;
-            const rt = result.data.refreshToken;
-            if (at !== "" && rt !== "") {
+            if (at !== "") {
               this.$store.commit("setAccessToken", at);
-              this.$store.commit("setRefreshToken", rt);
               this.$router.push("/");
             } else {
               alert("토큰 생성 실패");

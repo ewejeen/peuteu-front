@@ -2,7 +2,6 @@ export default {
   state: {
     isLoggedIn: null,
     accessToken: "",
-    refreshToken: "",
   },
   getters: {
     getLoginStatus(state) {
@@ -10,9 +9,6 @@ export default {
     },
     getAccessToken(state) {
       return state.accessToken;
-    },
-    getRefreshToken(state) {
-      return state.refreshToken;
     },
   },
   mutations: {
@@ -27,14 +23,8 @@ export default {
         state.accessToken = accessToken;
       }
     },
-    setRefreshToken(state, refreshToken) {
-      if (refreshToken) {
-        state.refreshToken = refreshToken;
-      }
-    },
     logout(state) {
       state.accessToken = "";
-      state.refreshToken = "";
       state.isLoggedIn = null;
     },
   },

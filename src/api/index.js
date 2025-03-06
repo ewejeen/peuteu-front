@@ -18,12 +18,17 @@ function create(url) {
 function registerInterceptor(instance) {
   instance.interceptors.request.use(
     function (config) {
-      if (store.getters.getAccessToken) {
-        config.headers.Authorization = "Bearer " + store.getters.getAccessToken;
+      const token = store.getters.getAccessToken;
+      const url = config.url;
+      const whitelist = ['/api/login', '/api/join'];
+
+      if(!token && whitelist.indexOf(url) == -1) {
+        return Promise.reject({
+          response: { status: 401, message: "Unauthorized" }
+        });
       }
-      if (store.getters.getRefreshToken) {
-        config.headers.AuthorizationRefresh = "Bearer " + store.getters.getRefreshToken;
-      }
+
+      config.headers.Authorization = "Bearer " + store.getters.getAccessToken;
       return config;
     },
     function (error) {
@@ -36,14 +41,14 @@ function registerInterceptor(instance) {
       return response;
     },
     function (error) {
-      
-      console.log(error.status)
       if (error.status === 403) {
         console.warn("403 Forbidden - 로그인 페이지로 이동합니다.");
-        store.commit("logout"); // Vuex에서 사용자 로그아웃 처리
+
+        store.commit("logout");
         router.replace("/login");
-        return ;
+        return Promise.reject(error);
       }
+      
       return Promise.reject(error.response);
     }
   );
