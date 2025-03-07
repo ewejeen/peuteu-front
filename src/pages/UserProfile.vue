@@ -186,11 +186,10 @@ export default {
         });
     },
     // 로그아웃
-    logout() {
-      console.log('logout')
-      const result = logout();
+    async logout() {
+      const result = await logout();
     
-      if (result && result.result === "success") {
+      if (result && result.data.result === "success") {
         this.$store.commit("logout");
         this.$router.push("/login");
       }

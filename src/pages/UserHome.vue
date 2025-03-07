@@ -228,7 +228,7 @@ export default {
       await this.getNowProtein();
       await this.getProteinIntakeList();
     } catch (error) {
-      console.error(error)
+      console.error('error',error)
     }
   },
   watch: {
