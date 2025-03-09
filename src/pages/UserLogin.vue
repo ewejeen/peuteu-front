@@ -115,10 +115,11 @@ export default {
           }
         })
         .catch((error) => {
+          console.log(error);
           if (error && error.status == 401) {
-            alert("로그인 실패");
+            alert("로그인 정보가 올바르지 않습니다.");
           } else {
-            alert("서버 에러 발생");
+            alert("서버 에러가 발생했습니다.");
             console.error(error);
           }
         });

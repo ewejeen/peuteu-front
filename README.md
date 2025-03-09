@@ -14,3 +14,9 @@
 - 비동기 함수의 순차 실행 제어: await로 비동기 작업을 순차적으로 처리할 수 있다.
 
 ** async/await를 사용하면 코드가 훨씬 간결하고, 관리하기 쉬우며, 비동기 작업의 복잡도를 크게 낮출 수 있다.
+
+
+# 2025-03-09
+## 로그인 기능 마무리 및 feature 브랜치 squash merge
+- 로그인 브랜치는 squash merge할 생각으로 커밋 컨벤션 지키지 않고 대충 커밋함
+- `git merge --squash feature/jwt_login` 명령어로 squash merge 후 `commit`함

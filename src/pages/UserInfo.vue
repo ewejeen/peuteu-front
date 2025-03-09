@@ -142,7 +142,6 @@ export default {
   methods: {
     enterPassword() {
       const payload = {
-        userId: "somxkosub2no",
         password: this.userPw,
       };
 
@@ -162,8 +161,7 @@ export default {
         });
     },
     setUser() {
-      const userId = "somxkosub2no";
-      getUserInfo(userId)
+      getUserInfo()
         .then((result) => {
           if (result && result.data.result === "success") {
             const info = result.data.data;
@@ -192,7 +190,6 @@ export default {
         return;
       }
       const payload = {
-        id: "somxkosub2no",
         nickname: nickname,
         gender: gender,
         height: height,

@@ -228,7 +228,7 @@ export default {
       await this.getNowProtein();
       await this.getProteinIntakeList();
     } catch (error) {
-      console.error('error',error)
+      console.error("error", error);
     }
   },
   watch: {
@@ -246,27 +246,26 @@ export default {
       try {
         const result = await getNowProteinSum();
         if (result && result.data.result === "success") {
-            const proteinSum = result.data.data;
+          const proteinSum = result.data.data;
 
-            if (proteinSum) {
-              this.$store.commit("updateProteinSum", result.data.data);
-              this.nowProtein = result.data.data;
-            } else {
-              this.nowProtein = 0;
-            }
+          if (proteinSum) {
+            this.$store.commit("updateProteinSum", result.data.data);
+            this.nowProtein = result.data.data;
           } else {
-            console.log("실패");
             this.nowProtein = 0;
           }
-      } catch (error) {
+        } else {
+          console.log("실패");
           this.nowProtein = 0;
-          console.error(error);
+        }
+      } catch (error) {
+        this.nowProtein = 0;
+        console.error(error);
       }
     },
 
     async getProteinList() {
       const payload = {
-        userId: "somxkosub2no", // TODO
         targetDate: this.getTodayDate,
         page: 0,
       };
@@ -275,11 +274,11 @@ export default {
         const result = await getProteinList(payload);
 
         if (result && result.data.result === "success") {
-            this.foodList = result.data.data;
-            this.foodList.forEach((item) => (item.edit = false));
-          } else {
-            console.log("실패");
-          }
+          this.foodList = result.data.data;
+          this.foodList.forEach((item) => (item.edit = false));
+        } else {
+          console.log("실패");
+        }
       } catch (error) {
         console.error(error);
       }
@@ -290,12 +289,12 @@ export default {
       try {
         const result = await getProteinIntakeList();
         if (result && result.data.result === "success") {
-            this.intakeList = result.data.data;
-          } else {
-            console.log("실패");
-          }
+          this.intakeList = result.data.data;
+        } else {
+          console.log("실패");
+        }
       } catch (error) {
-          console.error(error);
+        console.error(error);
       }
     },
 

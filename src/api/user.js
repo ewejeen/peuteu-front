@@ -11,8 +11,8 @@ export const join = (payload) => {
 };
 
 // 사용자 정보 조회
-export const getUserInfo = (id) => {
-  return request.get(`/api/user/${id}`);
+export const getUserInfo = () => {
+  return request.get(`/api/user/me`);
 };
 
 // 사용자 정보 수정

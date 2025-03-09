@@ -20,11 +20,11 @@ function registerInterceptor(instance) {
     function (config) {
       const token = store.getters.getAccessToken;
       const url = config.url;
-      const whitelist = ['/api/login', '/api/join', '/api/refresh'];
+      const whitelist = ["/api/login", "/api/join", "/api/refresh"];
 
-      if(!token && whitelist.indexOf(url) == -1) {
+      if (!token && whitelist.indexOf(url) == -1) {
         return Promise.reject({
-          response: { status: 401, message: "Unauthorized" }
+          response: { status: 401, message: "Unauthorized" },
         });
       }
 
@@ -45,16 +45,25 @@ function registerInterceptor(instance) {
     async function (error) {
       const originalRequest = error.config;
 
-       // 401 에러 발생 시 -> `/api/refresh` 호출 후 재요청
-      if (error.response.status === 401 && originalRequest && !originalRequest._retry) {
+      // 401 에러 발생 시 -> `/api/refresh` 호출 후 재요청
+      if (
+        error.response.status === 401 &&
+        error.response.data == "Token Expired" &&
+        originalRequest &&
+        !originalRequest._retry
+      ) {
         originalRequest._retry = true; // 무한 반복 방지
 
         try {
-          console.log('토큰 재발급 시도')
-          const refreshResponse = await instance.post("/api/refresh", {}, { withCredentials: true });
+          console.log("토큰 재발급 시도");
+          const refreshResponse = await instance.post(
+            "/api/refresh",
+            {},
+            { withCredentials: true }
+          );
 
-          if(refreshResponse.status !== 200) {
-            console.log('Refresh Token 없음 - 로그아웃')
+          if (refreshResponse.status !== 200) {
+            console.log("Refresh Token 없음 - 로그아웃");
             store.commit("logout");
             router.replace("/login");
             return Promise.reject(refreshResponse.response);

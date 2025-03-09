@@ -259,7 +259,6 @@ export default {
     },
     getProteinList() {
       const payload = {
-        userId: "somxkosub2no", // TODO
         targetDate: this.selectedDate,
       };
 
