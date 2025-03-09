@@ -1,9 +1,11 @@
 import { request } from "./index";
 
+// 로그인
 export const login = (payload) => {
   return request.post("/api/login", payload);
 };
 
+// 회원 가입
 export const join = (payload) => {
   return request.post("/api/join", payload);
 };
@@ -23,4 +25,9 @@ export const validatePassword = (payload) => {
   return request.get("/api/password", {
     params: payload,
   });
+};
+
+// 로그아웃
+export const logout = () => {
+  return request.post("/api/logout", null);
 };

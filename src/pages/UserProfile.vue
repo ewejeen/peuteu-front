@@ -112,11 +112,17 @@
         <p class="text-subtitle-1 text-teal-lighten-1">바로가기 ></p>
       </v-col>
     </v-row>
+    <v-row no-gutters class="mt-3">
+      <v-col>
+        <p class="text-subtitle-1 text-teal-lighten-1" @click="logout">로그아웃</p>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
 import { getMyProteinTarget, updateMyProteinTarget } from "@/api/protein";
+import { logout } from "@/api/user";
 
 export default {
   name: "UserProfile",
@@ -179,6 +185,15 @@ export default {
           console.error(error);
         });
     },
+    // 로그아웃
+    async logout() {
+      const result = await logout();
+    
+      if (result && result.data.result === "success") {
+        this.$store.commit("logout");
+        this.$router.push("/login");
+      }
+    }
   },
 };
 </script>

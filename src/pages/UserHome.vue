@@ -220,11 +220,16 @@ export default {
       }
     },
   },
-  created() {
+  async created() {
     this.intakeTime = this.getNowTime;
-    this.getProteinList();
-    this.getNowProtein();
-    this.getProteinIntakeList();
+
+    try {
+      await this.getProteinList();
+      await this.getNowProtein();
+      await this.getProteinIntakeList();
+    } catch (error) {
+      console.error('error',error)
+    }
   },
   watch: {
     food: function () {
@@ -237,11 +242,12 @@ export default {
     getRandomNumber(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
-    getNowProtein() {
-      getNowProteinSum()
-        .then((result) => {
-          if (result && result.data.result === "success") {
+    async getNowProtein() {
+      try {
+        const result = await getNowProteinSum();
+        if (result && result.data.result === "success") {
             const proteinSum = result.data.data;
+
             if (proteinSum) {
               this.$store.commit("updateProteinSum", result.data.data);
               this.nowProtein = result.data.data;
@@ -252,50 +258,45 @@ export default {
             console.log("실패");
             this.nowProtein = 0;
           }
-        })
-        .catch((error) => {
-          alert("서버 에러 발생");
+      } catch (error) {
           this.nowProtein = 0;
           console.error(error);
-        });
+      }
     },
 
-    getProteinList() {
+    async getProteinList() {
       const payload = {
         userId: "somxkosub2no", // TODO
         targetDate: this.getTodayDate,
         page: 0,
       };
 
-      getProteinList(payload)
-        .then((result) => {
-          if (result && result.data.result === "success") {
+      try {
+        const result = await getProteinList(payload);
+
+        if (result && result.data.result === "success") {
             this.foodList = result.data.data;
             this.foodList.forEach((item) => (item.edit = false));
           } else {
             console.log("실패");
           }
-        })
-        .catch((error) => {
-          alert("서버 에러 발생");
-          console.error(error);
-        });
+      } catch (error) {
+        console.error(error);
+      }
     },
 
     // 섭취 프로틴 목록 검색
-    getProteinIntakeList() {
-      getProteinIntakeList()
-        .then((result) => {
-          if (result && result.data.result === "success") {
+    async getProteinIntakeList() {
+      try {
+        const result = await getProteinIntakeList();
+        if (result && result.data.result === "success") {
             this.intakeList = result.data.data;
           } else {
             console.log("실패");
           }
-        })
-        .catch((error) => {
-          alert("서버 에러 발생");
+      } catch (error) {
           console.error(error);
-        });
+      }
     },
 
     // 프로틴 저장

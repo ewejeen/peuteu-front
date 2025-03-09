@@ -19,10 +19,13 @@ export default {
       return (state.isLoggedIn = result);
     },
     setAccessToken(state, accessToken) {
-      console.log(accessToken);
       if (accessToken) {
         state.accessToken = accessToken;
       }
+    },
+    logout(state) {
+      state.accessToken = "";
+      state.isLoggedIn = null;
     },
   },
   actions: {},
