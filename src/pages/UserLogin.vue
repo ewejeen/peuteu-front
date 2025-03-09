@@ -37,6 +37,7 @@
         variant="outlined"
         v-model="userPw"
         @click:append-inner="pwVisible = !pwVisible"
+        @keyup.enter="login"
       ></v-text-field>
 
       <v-btn
