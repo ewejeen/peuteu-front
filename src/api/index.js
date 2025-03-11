@@ -20,17 +20,18 @@ function registerInterceptor(instance) {
     function (config) {
       const token = store.getters.getAccessToken;
       const url = config.url;
-      const whitelist = ["/api/login", "/api/join", "/api/refresh"];
+      const whitelist = store.getters.getWhitelist;
 
-      if (!token && whitelist.indexOf(url) == -1) {
-        return Promise.reject({
-          response: { status: 401, message: "Unauthorized" },
-        });
-      }
-
-      if (token) {
+      if (!token) {
+        if(whitelist != null && whitelist.indexOf(url) == -1) {
+          return Promise.reject({
+            response: { status: 401, message: "Unauthorized" },
+          });
+        }
+      } else {
         config.headers.Authorization = "Bearer " + token;
       }
+
       return config;
     },
     function (error) {
@@ -44,6 +45,10 @@ function registerInterceptor(instance) {
     },
     async function (error) {
       const originalRequest = error.config;
+
+      if(!originalRequest) {
+        return Promise.reject(error.response);
+      }
 
       // 401 에러 발생 시 -> `/api/refresh` 호출 후 재요청
       if (
