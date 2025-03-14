@@ -22,7 +22,7 @@ export const updateUserInfo = (payload) => {
 
 // 비밀번호 검증
 export const validatePassword = (payload) => {
-  return request.get("/api/password", {
+  return request.get("/api/user/password", {
     params: payload,
   });
 };
@@ -30,4 +30,18 @@ export const validatePassword = (payload) => {
 // 로그아웃
 export const logout = () => {
   return request.post("/api/logout", null);
+};
+
+// 이메일 중복 확인
+export const checkEmail = (payload) => {
+  return request.get("/api/user/check-email", {
+    params: payload,
+  });
+};
+
+// 닉네임 중복 확인
+export const checkNickname = (payload) => {
+  return request.get("/api/user/check-nickname", {
+    params: payload,
+  });
 };
