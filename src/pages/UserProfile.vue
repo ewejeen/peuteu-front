@@ -73,11 +73,9 @@
     >
       바로가기 <v-icon icon="mdi-chevron-right"></v-icon>
     </router-link>
-    <v-row no-gutters class="mt-3">
-      <v-col>
-        <p class="text-subtitle-1 text-teal-lighten-1" @click="logout">로그아웃</p>
-      </v-col>
-    </v-row>
+    <div class="mt-3">
+      <span class="text-subtitle-1 text-grey-darken-1 txt-pointer" @click="logout">로그아웃</span>
+    </div>
   </v-container>
 </template>
 

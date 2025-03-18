@@ -211,6 +211,7 @@ export default {
           if (result && result.data.result === "success") {
             alert("수정 완료");
             this.setUser();
+            this.$router.push("/profile");
           } else {
             alert("수정 실패");
           }
