@@ -98,11 +98,19 @@
       <div class="add-area">
         <div class="field">
           <div class="text-subtitle-1 text-medium-emphasis">음식</div>
-          <v-text-field
+          <v-combobox
+              variant="outlined"
+              v-model="food"
+              :items="intakeList"
+              item-title="name"
+              hide-details
+              style="font-size: 0.5rem"
+          ></v-combobox>
+<!--          <v-text-field
             variant="outlined"
             v-model="food"
             hide-details
-          ></v-text-field>
+          ></v-text-field>-->
         </div>
       </div>
       <div class="add-area">
@@ -149,6 +157,7 @@ import {
   getProteinStatByMonth,
   saveProtein,
   updateProtein,
+  getProteinIntakeList,
 } from "@/api/protein";
 
 export default {
@@ -165,6 +174,7 @@ export default {
       intake: null,
       intakeTime: null,
       calDate: null,
+      intakeList: [],
 
       attrs: [
         {
@@ -205,8 +215,17 @@ export default {
     this.intakeTime = this.getNowTime;
     this.selectedDate = this.getTodayDate;
     this.selectedMonth = this.getTodayMonth;
+
     this.getProteinStatList();
     this.getProteinList();
+    this.getProteinIntakeList();
+  },
+  watch: {
+    food: function () {
+      if (this.food) {
+        this.intake = this.food.intake;
+      }
+    },
   },
   methods: {
     getProteinStatList() {
@@ -217,24 +236,24 @@ export default {
       };
       getProteinStatByMonth(payload)
         .then((result) => {
-          if (result && result.data.result === "success") {
-            this.successList = result.data.data;
-            const dateList = [];
-            const successDateList = [];
+        if (result && result.data.result === "success") {
+          this.successList = result.data.data;
+          const dateList = [];
+          const successDateList = [];
 
-            let successCount = 0;
-            this.successList.forEach((item) => {
-              dateList.push(new Date(item.date));
-              if (item.success) {
-                successDateList.push(new Date(item.date));
-                successCount++;
-              }
-            });
+          let successCount = 0;
+          this.successList.forEach((item) => {
+            dateList.push(new Date(item.date));
+            if (item.success) {
+              successDateList.push(new Date(item.date));
+              successCount++;
+            }
+          });
 
-            this.attrs = this.attrs.filter(function (obj) {
-              return obj.key == "today";
-            });
-            this.attrs.push(
+          this.attrs = this.attrs.filter(function (obj) {
+            return obj.key == "today";
+          });
+          this.attrs.push(
               {
                 key: "normalDay",
                 dates: dateList,
@@ -245,21 +264,22 @@ export default {
                 dates: successDateList,
                 dot: "red",
               }
-            );
+          );
 
-            this.successCount = successCount;
-          } else {
-            console.log("실패");
-          }
+          this.successCount = successCount;
+        } else {
+          console.log("실패");
+        }
         })
         .catch((error) => {
           alert("서버 에러 발생");
-          console.error(error);
+        console.error(error);
         });
     },
     getProteinList() {
       const payload = {
         targetDate: this.selectedDate,
+        page: 0
       };
 
       getProteinList(payload)
@@ -285,6 +305,20 @@ export default {
     showProteinList(item) {
       this.selectedDate = item.id;
       this.getProteinList();
+    },
+    // 섭취 프로틴 목록 검색
+    getProteinIntakeList() {
+      getProteinIntakeList()
+          .then((result) => {
+            if (result && result.data.result === "success") {
+              this.intakeList = result.data.data;
+            } else {
+              console.log("실패");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
     },
     moveMonth(item) {
       this.selectedMonth = item[0].id;
@@ -391,6 +425,7 @@ export default {
     refreshProtein() {
       this.getProteinStatList();
       this.getProteinList();
+      this.getProteinIntakeList();
 
       this.food = null;
       this.intake = null;
