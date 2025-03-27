@@ -1,5 +1,5 @@
 <template>
-  <v-container class="align-self-center container-box">
+  <v-container v-if="!joinCompleted" class="align-self-center container-box">
     <v-img
       class="mx-auto mt-6"
       max-width="228"
@@ -124,6 +124,34 @@
       </v-btn>
     </v-card>
   </v-container>
+  <v-container v-else class="align-self-center container-box mx-auto my-auto">
+    <v-card
+        variant="text"
+        color="surface-variant"
+        class="mx-auto my-auto pa-5 mt-16"
+        max-width="448"
+        rounded="lg"
+    >
+      <div
+          class="text-subtitle-1 text-center text-teal-lighten-1"
+          style="margin-top: 130px; margin-bottom: 140px"
+      >
+        환영합니다!<br>
+        회원 가입이 완료되었습니다.
+      </div>
+
+      <v-btn
+          class="mb-8 mt-14"
+          color="teal-lighten-2"
+          size="large"
+          height="50px"
+          block
+          @click="goToLogin"
+      >
+        확인
+      </v-btn>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -133,6 +161,7 @@ export default {
   name: "UserJoin",
   data() {
     return {
+      joinCompleted: false,
       pwVisible: false,
       pwCheckVisible: false,
       userId: null,
@@ -332,10 +361,8 @@ export default {
 
       join(payload)
         .then((result) => {
-          console.log(result);
           if (result && result.data.result === "success") {
-            alert("가입 성공");
-            this.$router.push("/login");
+            this.joinCompleted = true;
           } else {
             alert("가입 실패");
           }
@@ -392,6 +419,10 @@ export default {
       if(val!=null && val.indexOf(".") > -1 && (val.split('.')[1].length > 0)){
         $event.preventDefault();
       }
+    },
+    // 로그인 페이지로 이동
+    goToLogin() {
+      this.$router.push("/login");
     },
   },
 };
