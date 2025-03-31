@@ -10,13 +10,14 @@
     </div>
     <div class="d-flex align-items-center mb-3">
       <v-text-field
+        v-if="proteinUpdatable"
         variant="outlined"
         v-model="target"
-        :readonly="!proteinUpdatable"
         class="mr-2 text-field-fix"
         hide-details
       ></v-text-field>
-      <span class="text-h5 font-weight-bold text-teal-lighten-1 mr-5">g</span>
+      <span class="text-h5 font-weight-bold text-teal-lighten-1" v-else>{{target}}</span>
+      <span class="text-h5 font-weight-bold text-teal-lighten-1 mr-5" v-if="target || proteinUpdatable">g</span>
       <v-btn
         v-if="!proteinUpdatable"
         color="teal-darken-2"
@@ -27,16 +28,26 @@
       >
         수정
       </v-btn>
+      <div v-else>
       <v-btn
-        v-else
         color="teal-lighten-2"
         density="comfortable"
-        size="medium"
-        class="mr-2 large-btn"
+        size="small"
+        class="mr-2 medium-btn"
         @click="saveTarget"
       >
         저장
       </v-btn>
+      <v-btn
+          color="grey-darken-1"
+          density="comfortable"
+          size="small"
+          class="mr-2 medium-btn"
+          @click="cancelSaveTarget"
+      >
+        취소
+      </v-btn>
+      </div>
       <v-switch
         v-if="mode === 'save'"
         color="teal-lighten-1"
@@ -111,6 +122,10 @@ export default {
       } else {
         this.mode = "modify";
       }
+    },
+    cancelSaveTarget() {
+      this.changeTarget();
+      // this.
     },
     // 내 목표 섭취량 조회
     getMyTarget() {
@@ -198,11 +213,17 @@ export default {
 .align-items-center {
   align-items: center;
 }
-/* 버튼 크기 조정 */
+
 .large-btn {
-  height: 48px; /* 버튼 높이 조정 */
-  min-width: 80px; /* 최소 너비 */
-  font-size: 16px; /* 글자 크기 */
+  height: 48px;
+  min-width: 80px;
+  font-size: 16px;
+}
+
+.medium-btn {
+  height: 48px;
+  min-width: 40px;
+  font-size: 16px;
 }
 
 .text-field-fix {

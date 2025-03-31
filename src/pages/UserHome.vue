@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <div class="today-protein">
+    <div class="today-protein" v-if="requiredProtein">
       <p class="text-h5 font-weight-bold mb-2">{{ getTodayDate }}</p>
       <!-- <p class="text-subtitle-1 font-italic">{{ getRandomProverb }}</p> -->
       <div class="protein-summary mt-7">
@@ -22,6 +22,17 @@
             {{ remainProtein }}
           </div>
         </div>
+      </div>
+    </div>
+    <div class="today-protein" v-else>
+      <div class="text-center">
+        <p class="text-h6 mb-2">목표 프로틴 섭취량을 등록해주세요</p>
+        <router-link
+            to="/profile"
+            class="text-teal-lighten-2 text-decoration-none"
+        >
+          등록하러 가기 <v-icon icon="mdi-chevron-right"></v-icon>
+        </router-link>
       </div>
     </div>
 
@@ -344,8 +355,6 @@ export default {
       saveProtein(payload)
         .then((result) => {
           if (result && result.data.result === "success") {
-            alert("저장 완료");
-
             this.refreshProtein();
           } else {
             alert("저장 실패");
@@ -362,7 +371,6 @@ export default {
         .then((result) => {
           if (result && result.data.result === "success") {
             if (confirm("삭제하시겠습니까?")) {
-              alert("삭제 완료");
               this.refreshProtein();
             }
           } else {
